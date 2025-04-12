@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35327.3
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kreator Grafików", "Kreator Grafików\Kreator Grafików.csproj", "{CE4B0026-AFF8-4143-90E7-EDAC2790871F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CE4B0026-AFF8-4143-90E7-EDAC2790871F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE4B0026-AFF8-4143-90E7-EDAC2790871F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE4B0026-AFF8-4143-90E7-EDAC2790871F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE4B0026-AFF8-4143-90E7-EDAC2790871F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9E59D08C-1236-44CE-8C77-47D687569F6E}
+	EndGlobalSection
+EndGlobal
