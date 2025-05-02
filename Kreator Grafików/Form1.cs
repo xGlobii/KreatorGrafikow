@@ -1,6 +1,7 @@
 using System.Data;
 using System.Drawing.Printing;
 using System.Globalization;
+using System.Runtime.InteropServices;
 using System.Text.Json;
 
 namespace Kreator_Grafików
@@ -11,6 +12,7 @@ namespace Kreator_Grafików
 		const int bigCellWidth = 100;
 		const int cellHeight = 30;
 		const int bigCellHeight = 60;
+		private int currentRowIndex = 0;
 
 		public Form1()
 		{
@@ -254,14 +256,13 @@ namespace Kreator_Grafików
 			int x;
 			int y = topMargin;
 
-			e.Graphics.Clear(Color.White);
-			foreach (DataGridViewRow row in workersGrid.Rows)
+			for (int row = currentRowIndex; row < workersGrid.Rows.Count; row++)
 			{
-				int dynamicHeight = (row.Index % 2 == 0) ? cellHeight : bigCellHeight;
+				int dynamicHeight = (row % 2 == 0) ? cellHeight : bigCellHeight - 10;
 				x = leftMargin;
 				foreach (DataGridViewColumn column in workersGrid.Columns)
 				{
-					DataGridViewCell cell = workersGrid.Rows[row.Index].Cells[column.Index];
+					DataGridViewCell cell = workersGrid.Rows[row].Cells[column.Index];
 					string cellValue = cell.Value?.ToString() ?? "";
 
 					int dynamicWidth = (column.Index > 0) ? cellWidth - 10 : bigCellWidth;
@@ -280,7 +281,17 @@ namespace Kreator_Grafików
 					x += dynamicWidth;
 				}
 				y += dynamicHeight;
+
+				if (y >= e.MarginBounds.Height + topMargin)
+				{
+					e.HasMorePages = true;
+					currentRowIndex = row + 1;
+					return;
+				}
 			}
+			currentRowIndex = 0;
+			e.HasMorePages = false;
+
 		}
 
 		private void BtnSaveJSON_Click(object sender, EventArgs e)
@@ -316,7 +327,7 @@ namespace Kreator_Grafików
 							cell.Style.BackColor == Color.FromArgb(166, 166, 166) ? "tak" : "nie"));
 					}
 					employeeData.Add("suma", workersGrid.Rows[row.Index].Cells[32].Value?.ToString() ?? "");
-					employees.Add(workersGrid.Rows[row.Index].Cells[0].Value?.ToString() ?? "", employeeData);
+					employees.Add(workersGrid.Rows[row.Index].Cells[0].Value?.ToString() ?? $"Pracownik{(row.Index + 1) / 2}", employeeData);
 				}
 			}
 
@@ -326,6 +337,82 @@ namespace Kreator_Grafików
 			string jsonString = JsonSerializer.Serialize(employees, jsonOptions);
 			File.WriteAllText(filePath, jsonString);
 			MessageBox.Show("Zapisano do pliku JSON: " + filePath, "Zapisano", MessageBoxButtons.OK, MessageBoxIcon.Information);
+		}
+
+		private void BtnLoad_Click(object sender, EventArgs e)
+		{
+			OpenFileDialog openFileDialog = new()
+			{
+				Filter = "Pliki JSON (*.json)|*.json",
+				Title = "Wczytaj plik JSON"
+			};
+
+			if (openFileDialog.ShowDialog() == DialogResult.OK)
+			{
+				ConvertToDictionary(openFileDialog.FileName);
+			}
+		}
+
+		private void ConvertToDictionary(string filePath)
+		{
+			workersGrid.Rows.Clear();
+
+			var jsonOptions = new JsonSerializerOptions();
+			var employees = new Dictionary<string, Dictionary<string, object>>();
+
+			var data = File.ReadAllText(filePath);
+			employees = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, object>>>(data, jsonOptions);
+
+			int count = employees?.Count ?? 0;
+			WorkersNumber.Value = count;
+
+			var loadedEmployees = new Dictionary<string, Dictionary<string, object>>();
+
+			foreach (var employee in employees)
+			{
+				var employeeInfo = new Dictionary<string, object>();
+
+				foreach (var day in employee.Value)
+				{
+					if (day.Key == "suma")
+					{
+						employeeInfo.Add(day.Key, day.Value);
+						continue;
+					}
+
+					DayInfo dayInfo = JsonSerializer.Deserialize<DayInfo>(day.Value.ToString());
+					employeeInfo.Add(day.Key, dayInfo);
+				}
+
+				loadedEmployees.Add(employee.Key, employeeInfo);
+			}
+
+			foreach (DataGridViewRow row in workersGrid.Rows)
+			{
+				foreach (DataGridViewColumn col in workersGrid.Columns)
+				{
+					DataGridViewCell cell = workersGrid.Rows[row.Index].Cells[col.Index];
+
+					if (row.Index % 2 == 1)
+					{
+						if (col.Index == 0)
+						{
+							cell.Value = loadedEmployees?.ElementAt(row.Index / 2).Key ?? "";
+						}
+						else if (col.Index > 0 && col.Index < 32)
+						{
+							var dayInfo = loadedEmployees?.ElementAt(row.Index / 2).Value[col.Index.ToString()] as DayInfo;
+							cell.Value = dayInfo.Hour;
+
+							if (dayInfo.Register == "tak")
+								cell.Style.BackColor = Color.FromArgb(166, 166, 166);
+
+							if (dayInfo.DayType == "weekend")
+								workersGrid.Rows[row.Index - 1].Cells[col.Index].Style.BackColor = Color.FromArgb(244, 176, 132);
+						}
+					}
+				}
+			}
 		}
 	}
 }

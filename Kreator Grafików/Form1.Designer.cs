@@ -28,7 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+			DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
 			workersGrid = new DataGridView();
 			hoursGropbox = new GroupBox();
 			label1 = new Label();
@@ -53,7 +53,7 @@
 			BtnReset = new Button();
 			btnPrint = new Button();
 			BtnSaveJSON = new Button();
-			btnLoad = new Button();
+			BtnLoad = new Button();
 			btnSave = new Button();
 			WorkersNumber = new NumericUpDown();
 			label2 = new Label();
@@ -76,14 +76,14 @@
 			workersGrid.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
 			workersGrid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
 			workersGrid.ColumnHeadersVisible = false;
-			dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter;
-			dataGridViewCellStyle2.BackColor = SystemColors.Window;
-			dataGridViewCellStyle2.Font = new Font("Segoe UI", 9F);
-			dataGridViewCellStyle2.ForeColor = SystemColors.ControlText;
-			dataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight;
-			dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
-			dataGridViewCellStyle2.WrapMode = DataGridViewTriState.True;
-			workersGrid.DefaultCellStyle = dataGridViewCellStyle2;
+			dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter;
+			dataGridViewCellStyle1.BackColor = SystemColors.Window;
+			dataGridViewCellStyle1.Font = new Font("Segoe UI", 9F);
+			dataGridViewCellStyle1.ForeColor = SystemColors.ControlText;
+			dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
+			dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
+			dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
+			workersGrid.DefaultCellStyle = dataGridViewCellStyle1;
 			workersGrid.Location = new Point(12, 83);
 			workersGrid.MultiSelect = false;
 			workersGrid.Name = "workersGrid";
@@ -347,14 +347,15 @@
 			BtnSaveJSON.UseVisualStyleBackColor = true;
 			BtnSaveJSON.Click += BtnSaveJSON_Click;
 			// 
-			// btnLoad
+			// BtnLoad
 			// 
-			btnLoad.Location = new Point(1512, 47);
-			btnLoad.Name = "btnLoad";
-			btnLoad.Size = new Size(94, 29);
-			btnLoad.TabIndex = 8;
-			btnLoad.Text = "Wczytaj";
-			btnLoad.UseVisualStyleBackColor = true;
+			BtnLoad.Location = new Point(1512, 47);
+			BtnLoad.Name = "BtnLoad";
+			BtnLoad.Size = new Size(94, 29);
+			BtnLoad.TabIndex = 8;
+			BtnLoad.Text = "Wczytaj";
+			BtnLoad.UseVisualStyleBackColor = true;
+			BtnLoad.Click += BtnLoad_Click;
 			// 
 			// btnSave
 			// 
@@ -390,7 +391,7 @@
 			Controls.Add(label2);
 			Controls.Add(WorkersNumber);
 			Controls.Add(btnSave);
-			Controls.Add(btnLoad);
+			Controls.Add(BtnLoad);
 			Controls.Add(BtnSaveJSON);
 			Controls.Add(btnPrint);
 			Controls.Add(BtnReset);
@@ -441,10 +442,10 @@
         private Button BtnReset;
         private Button btnPrint;
         private Button BtnSaveJSON;
-        private Button btnLoad;
+        private Button BtnLoad;
         private Button btnSave;
         private NumericUpDown WorkersNumber;
         private Label label2;
         private System.Drawing.Printing.PrintDocument printDocument1;
-    }
+	}
 }
