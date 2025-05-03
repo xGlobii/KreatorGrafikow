@@ -6,6 +6,22 @@ using System.Text.Json;
 
 namespace Kreator_Grafików
 {
+	enum Months
+	{
+		Styczeń = 1,
+		Luty,
+		Marzec,
+		Kwiecień,
+		Maj,
+		Czerwiec,
+		Lipiec,
+		Sierpień,
+		Wrzesień,
+		Październik,
+		Listopad,
+		Grudzień
+	}
+
 	public partial class Form1 : Form
 	{
 		const int cellWidth = 40;
@@ -20,6 +36,7 @@ namespace Kreator_Grafików
 			workersGrid.CellClick += workersGrid_CellClick;
 			workersGrid.CellValueChanged += workersGrid_HoursUpdate;
 			printDocument1.PrintPage += printDocument1_PrintPage;
+			MonthComboBox.DataSource = Enum.GetValues(typeof(Months));
 		}
 
 		private void workersNumber_ValueChanged(object sender, EventArgs e)
@@ -294,13 +311,17 @@ namespace Kreator_Grafików
 
 		}
 
-		private void BtnSaveJSON_Click(object sender, EventArgs e)
+		private void BtnSave_Click(object sender, EventArgs e)
 		{
+			int month = (int)MonthComboBox.SelectedItem;
+			string stringMonth = month > 10 ? month.ToString() : $"0{month.ToString()}";
+			int currentYear = DateTime.Now.Year;
+
 			SaveFileDialog saveFileDialog = new()
 			{
 				Filter = "Pliki JSON (*.json)|*.json",
 				Title = "Zapisz jako JSON",
-				FileName = "data.json"
+				FileName = $"data{stringMonth}{currentYear}.json"
 			};
 
 			if (saveFileDialog.ShowDialog() == DialogResult.OK)
@@ -360,8 +381,31 @@ namespace Kreator_Grafików
 			var jsonOptions = new JsonSerializerOptions();
 			var employees = new Dictionary<string, Dictionary<string, object>>();
 
-			var data = File.ReadAllText(filePath);
-			employees = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, object>>>(data, jsonOptions);
+			try
+			{
+				var data = File.ReadAllText(filePath);
+				employees = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, object>>>(data, jsonOptions);
+			}
+			catch (IOException)
+			{
+				MessageBox.Show("Brak dostępu do pliku", filePath, MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
+			catch (JsonException)
+			{
+				MessageBox.Show("Błąd wczytywania pliku JSON", filePath, MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
+			catch (FormatException)
+			{
+				MessageBox.Show("Błąd formatu pliku JSON", filePath, MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
+			catch (Exception)
+			{
+				MessageBox.Show("Nieznany błąd", filePath, MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
 
 			int count = employees?.Count ?? 0;
 			WorkersNumber.Value = count;
@@ -380,8 +424,22 @@ namespace Kreator_Grafików
 						continue;
 					}
 
-					DayInfo dayInfo = JsonSerializer.Deserialize<DayInfo>(day.Value.ToString());
-					employeeInfo.Add(day.Key, dayInfo);
+					try
+					{
+						DayInfo dayInfo = JsonSerializer.Deserialize<DayInfo>(day.Value.ToString());
+						employeeInfo.Add(day.Key, dayInfo);
+					}
+					catch (JsonException)
+					{
+						MessageBox.Show($"Błąd deserializacji dnia '{day.Key}' dla pracownika '{employee.Key}'",
+							filePath, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+						return;
+					}
+					catch (Exception)
+					{
+						MessageBox.Show("Nieznany błąd", filePath, MessageBoxButtons.OK, MessageBoxIcon.Error);
+						return;
+					}
 				}
 
 				loadedEmployees.Add(employee.Key, employeeInfo);
@@ -393,23 +451,32 @@ namespace Kreator_Grafików
 				{
 					DataGridViewCell cell = workersGrid.Rows[row.Index].Cells[col.Index];
 
-					if (row.Index % 2 == 1)
+					try
 					{
-						if (col.Index == 0)
+						if (row.Index % 2 == 1)
 						{
-							cell.Value = loadedEmployees?.ElementAt(row.Index / 2).Key ?? "";
-						}
-						else if (col.Index > 0 && col.Index < 32)
-						{
-							var dayInfo = loadedEmployees?.ElementAt(row.Index / 2).Value[col.Index.ToString()] as DayInfo;
-							cell.Value = dayInfo.Hour;
+							if (col.Index == 0)
+							{
+								cell.Value = loadedEmployees?.ElementAt(row.Index / 2).Key ?? "";
+							}
+							else if (col.Index > 0 && col.Index < 32)
+							{
+								var dayInfo = loadedEmployees?.ElementAt(row.Index / 2).Value[col.Index.ToString()] as DayInfo;
+								cell.Value = dayInfo.Hour;
 
-							if (dayInfo.Register == "tak")
-								cell.Style.BackColor = Color.FromArgb(166, 166, 166);
+								if (dayInfo.Register == "tak")
+									cell.Style.BackColor = Color.FromArgb(166, 166, 166);
 
-							if (dayInfo.DayType == "weekend")
-								workersGrid.Rows[row.Index - 1].Cells[col.Index].Style.BackColor = Color.FromArgb(244, 176, 132);
+								if (dayInfo.DayType == "weekend")
+									workersGrid.Rows[row.Index - 1].Cells[col.Index].Style.BackColor = Color.FromArgb(244, 176, 132);
+							}
 						}
+					}
+					catch (Exception)
+					{
+						MessageBox.Show("Błąd w pliku", filePath, MessageBoxButtons.OK, MessageBoxIcon.Error);
+						WorkersNumber.Value = 0;
+						return;
 					}
 				}
 			}

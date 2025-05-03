@@ -52,12 +52,13 @@
 			personTextbox = new TextBox();
 			BtnReset = new Button();
 			btnPrint = new Button();
-			BtnSaveJSON = new Button();
+			BtnSave = new Button();
 			BtnLoad = new Button();
-			btnSave = new Button();
 			WorkersNumber = new NumericUpDown();
 			label2 = new Label();
 			printDocument1 = new System.Drawing.Printing.PrintDocument();
+			labelMonth = new Label();
+			MonthComboBox = new ComboBox();
 			((System.ComponentModel.ISupportInitialize)workersGrid).BeginInit();
 			hoursGropbox.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)customEnd).BeginInit();
@@ -91,7 +92,7 @@
 			workersGrid.RowHeadersVisible = false;
 			workersGrid.RowHeadersWidth = 51;
 			workersGrid.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.DisableResizing;
-			workersGrid.Size = new Size(1716, 606);
+			workersGrid.Size = new Size(1776, 606);
 			workersGrid.TabIndex = 0;
 			// 
 			// hoursGropbox
@@ -321,7 +322,7 @@
 			// 
 			BtnReset.Location = new Point(1412, 12);
 			BtnReset.Name = "BtnReset";
-			BtnReset.Size = new Size(94, 29);
+			BtnReset.Size = new Size(95, 30);
 			BtnReset.TabIndex = 5;
 			BtnReset.Text = "Reset";
 			BtnReset.UseVisualStyleBackColor = true;
@@ -329,42 +330,33 @@
 			// 
 			// btnPrint
 			// 
-			btnPrint.Location = new Point(1412, 48);
+			btnPrint.Location = new Point(1412, 47);
 			btnPrint.Name = "btnPrint";
-			btnPrint.Size = new Size(94, 29);
+			btnPrint.Size = new Size(95, 30);
 			btnPrint.TabIndex = 6;
 			btnPrint.Text = "Drukuj";
 			btnPrint.UseVisualStyleBackColor = true;
 			btnPrint.Click += btnPrint_Click;
 			// 
-			// BtnSaveJSON
+			// BtnSave
 			// 
-			BtnSaveJSON.Location = new Point(1612, 31);
-			BtnSaveJSON.Name = "BtnSaveJSON";
-			BtnSaveJSON.Size = new Size(121, 29);
-			BtnSaveJSON.TabIndex = 7;
-			BtnSaveJSON.Text = "Zapisz do JSON";
-			BtnSaveJSON.UseVisualStyleBackColor = true;
-			BtnSaveJSON.Click += BtnSaveJSON_Click;
+			BtnSave.Location = new Point(1512, 12);
+			BtnSave.Name = "BtnSave";
+			BtnSave.Size = new Size(95, 30);
+			BtnSave.TabIndex = 7;
+			BtnSave.Text = "Zapisz";
+			BtnSave.UseVisualStyleBackColor = true;
+			BtnSave.Click += BtnSave_Click;
 			// 
 			// BtnLoad
 			// 
 			BtnLoad.Location = new Point(1512, 47);
 			BtnLoad.Name = "BtnLoad";
-			BtnLoad.Size = new Size(94, 29);
+			BtnLoad.Size = new Size(95, 30);
 			BtnLoad.TabIndex = 8;
 			BtnLoad.Text = "Wczytaj";
 			BtnLoad.UseVisualStyleBackColor = true;
 			BtnLoad.Click += BtnLoad_Click;
-			// 
-			// btnSave
-			// 
-			btnSave.Location = new Point(1512, 12);
-			btnSave.Name = "btnSave";
-			btnSave.Size = new Size(94, 29);
-			btnSave.TabIndex = 9;
-			btnSave.Text = "Zapisz";
-			btnSave.UseVisualStyleBackColor = true;
 			// 
 			// WorkersNumber
 			// 
@@ -383,16 +375,34 @@
 			label2.TabIndex = 11;
 			label2.Text = "Ilość pracowników";
 			// 
+			// labelMonth
+			// 
+			labelMonth.AutoSize = true;
+			labelMonth.Location = new Point(1634, 16);
+			labelMonth.Name = "labelMonth";
+			labelMonth.Size = new Size(59, 20);
+			labelMonth.TabIndex = 13;
+			labelMonth.Text = "Miesiąc";
+			// 
+			// MonthComboBox
+			// 
+			MonthComboBox.FormattingEnabled = true;
+			MonthComboBox.Location = new Point(1634, 47);
+			MonthComboBox.Name = "MonthComboBox";
+			MonthComboBox.Size = new Size(151, 28);
+			MonthComboBox.TabIndex = 14;
+			// 
 			// Form1
 			// 
 			AutoScaleDimensions = new SizeF(8F, 20F);
 			AutoScaleMode = AutoScaleMode.Font;
-			ClientSize = new Size(1740, 701);
+			ClientSize = new Size(1800, 701);
+			Controls.Add(MonthComboBox);
+			Controls.Add(labelMonth);
 			Controls.Add(label2);
 			Controls.Add(WorkersNumber);
-			Controls.Add(btnSave);
 			Controls.Add(BtnLoad);
-			Controls.Add(BtnSaveJSON);
+			Controls.Add(BtnSave);
 			Controls.Add(btnPrint);
 			Controls.Add(BtnReset);
 			Controls.Add(personTextbox);
@@ -441,11 +451,12 @@
         private TextBox personTextbox;
         private Button BtnReset;
         private Button btnPrint;
-        private Button BtnSaveJSON;
+        private Button BtnSave;
         private Button BtnLoad;
-        private Button btnSave;
         private NumericUpDown WorkersNumber;
         private Label label2;
         private System.Drawing.Printing.PrintDocument printDocument1;
+		private Label labelMonth;
+		private ComboBox MonthComboBox;
 	}
 }
